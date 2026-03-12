@@ -16,7 +16,8 @@
   "route",
   "enabled",
   "roles",
-  "icon"
+  "icon",
+  "class"
  ],
  "fields": [
   {
@@ -43,7 +44,9 @@
    "default": "0",
    "fieldname": "is_group",
    "fieldtype": "Check",
-   "label": "Is Group"
+   "in_list_view": 1,
+   "label": "Is Group",
+   "search_index": 1
   },
   {
    "fieldname": "old_parent",
@@ -65,7 +68,9 @@
   {
    "fieldname": "menu_name",
    "fieldtype": "Data",
-   "label": "Sidebar Menu"
+   "in_list_view": 1,
+   "label": "Sidebar Menu",
+   "search_index": 1
   },
   {
    "fieldname": "route",
@@ -76,7 +81,8 @@
    "default": "0",
    "fieldname": "enabled",
    "fieldtype": "Check",
-   "label": "Enabled"
+   "label": "Enabled",
+   "search_index": 1
   },
   {
    "description": "Roles in string with comma separated",
@@ -88,13 +94,18 @@
    "fieldname": "icon",
    "fieldtype": "Data",
    "label": "Icon"
+  },
+  {
+   "fieldname": "class",
+   "fieldtype": "Data",
+   "label": "Class"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "is_tree": 1,
  "links": [],
- "modified": "2026-03-12 01:13:27.741537",
+ "modified": "2026-03-12 22:31:45.177564",
  "modified_by": "Administrator",
  "module": "Smart School",
  "name": "Sidebar Menu",
