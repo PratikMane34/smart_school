@@ -1,0 +1,151 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2026-04-08 22:59:51.397389",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "visitor_purpose",
+  "contact_number",
+  "column_break_xldz",
+  "meeting_with",
+  "column_break_xhwy",
+  "visitor_name",
+  "section_break_rkql",
+  "id_card",
+  "number_of_person",
+  "attach_document",
+  "note",
+  "column_break_zihi",
+  "visitor_intime",
+  "visitor_outtime"
+ ],
+ "fields": [
+  {
+   "fieldname": "visitor_purpose",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Visitor Purpose",
+   "options": "VIsitor Purpose",
+   "reqd": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "contact_number",
+   "fieldtype": "Data",
+   "label": "Contact Number"
+  },
+  {
+   "fieldname": "column_break_xldz",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "meeting_with",
+   "fieldtype": "Select",
+   "label": "Meeting with",
+   "options": "\nStudent\nStaff",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_xhwy",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "visitor_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Visitor Name",
+   "reqd": 1
+  },
+  {
+   "fieldname": "section_break_rkql",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "id_card",
+   "fieldtype": "Data",
+   "label": "ID Card"
+  },
+  {
+   "fieldname": "number_of_person",
+   "fieldtype": "Int",
+   "label": "Number of Person"
+  },
+  {
+   "fieldname": "attach_document",
+   "fieldtype": "Attach",
+   "label": "Attach Document"
+  },
+  {
+   "fieldname": "note",
+   "fieldtype": "Small Text",
+   "label": "Note"
+  },
+  {
+   "fieldname": "column_break_zihi",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "visitor_intime",
+   "fieldtype": "Datetime",
+   "label": "Visitor Intime"
+  },
+  {
+   "fieldname": "visitor_outtime",
+   "fieldtype": "Datetime",
+   "label": "Visitor Outtime"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-04-13 19:47:47.418463",
+ "modified_by": "Administrator",
+ "module": "Smart School",
+ "name": "Visitor",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Student",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "School Admin",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

@@ -105,7 +105,7 @@
  "index_web_pages_for_search": 1,
  "is_tree": 1,
  "links": [],
- "modified": "2026-03-12 22:31:45.177564",
+ "modified": "2026-04-08 23:52:05.917811",
  "modified_by": "Administrator",
  "module": "Smart School",
  "name": "Sidebar Menu",
@@ -129,5 +129,6 @@
  "rows_threshold_for_grid_search": 20,
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": []
+ "states": [],
+ "title_field": "menu_name"
 }
