@@ -1,9 +1,6 @@
 import frappe
 
 def execute():
-    # frappe.db.add_index("Student","enabled")
-    # frappe.db.add_index("Student","user")
-    # frappe.db.add_index("Student Guardian", ["parent", "relation"])
     indexes = [
         ("Student Guardian", ["parent", "relation"]),
         ("Student Guardian", ["guardian_name", "relation"]),
