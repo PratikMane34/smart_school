@@ -1,0 +1,113 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2026-04-19 18:10:37.822401",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "enquirer_name",
+  "column_break_odgh",
+  "mobile",
+  "column_break_awcs",
+  "call_date",
+  "section_break_aqpv",
+  "description",
+  "next_followup_date",
+  "call_duration",
+  "note",
+  "call_type"
+ ],
+ "fields": [
+  {
+   "fieldname": "enquirer_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Enquirer Name"
+  },
+  {
+   "fieldname": "column_break_odgh",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "mobile",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Mobile",
+   "options": "Phone",
+   "search_index": 1
+  },
+  {
+   "fieldname": "column_break_awcs",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "call_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Call Date",
+   "search_index": 1
+  },
+  {
+   "fieldname": "section_break_aqpv",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Small Text",
+   "label": "Description"
+  },
+  {
+   "fieldname": "next_followup_date",
+   "fieldtype": "Date",
+   "label": "Next Followup Date",
+   "search_index": 1
+  },
+  {
+   "fieldname": "call_duration",
+   "fieldtype": "Time",
+   "label": "Call Duration"
+  },
+  {
+   "fieldname": "note",
+   "fieldtype": "Small Text",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Note"
+  },
+  {
+   "fieldname": "call_type",
+   "fieldtype": "Select",
+   "label": "Call Type",
+   "options": "\nIncoming\nOutgoing",
+   "search_index": 1
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-04-19 18:29:15.593332",
+ "modified_by": "Administrator",
+ "module": "Smart School",
+ "name": "Enquiry Call Logs",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
