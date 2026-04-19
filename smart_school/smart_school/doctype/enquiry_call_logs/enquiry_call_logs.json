@@ -60,24 +60,26 @@
   {
    "fieldname": "next_followup_date",
    "fieldtype": "Date",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "Next Followup Date",
    "search_index": 1
   },
   {
    "fieldname": "call_duration",
    "fieldtype": "Time",
+   "in_list_view": 1,
    "label": "Call Duration"
   },
   {
    "fieldname": "note",
    "fieldtype": "Small Text",
-   "in_list_view": 1,
-   "in_standard_filter": 1,
    "label": "Note"
   },
   {
    "fieldname": "call_type",
    "fieldtype": "Select",
+   "in_list_view": 1,
    "label": "Call Type",
    "options": "\nIncoming\nOutgoing",
    "search_index": 1
@@ -86,7 +88,7 @@
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-04-19 18:29:15.593332",
+ "modified": "2026-04-19 18:50:14.521178",
  "modified_by": "Administrator",
  "module": "Smart School",
  "name": "Enquiry Call Logs",
