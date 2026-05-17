@@ -1,0 +1,36 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2026-05-17 17:37:01.941372",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "section_break_vy3j"
+ ],
+ "fields": [
+    {"fieldname": "day",        "fieldtype": "Select",  "label": "Day",        "reqd": 1,
+     "options": "Monday\nTuesday\nWednesday\nThursday\nFriday\nSaturday", "in_list_view": 1},
+    {"fieldname": "period",     "fieldtype": "Link",    "label": "Period",     "options": "Timetable Period", "reqd": 1, "in_list_view": 1},
+    {"fieldname": "start_time", "fieldtype": "Time",    "label": "Start Time", "fetch_from": "period.start_time", "in_list_view": 1},
+    {"fieldname": "end_time",   "fieldtype": "Time",    "label": "End Time",   "fetch_from": "period.end_time"},
+    {"fieldname": "subject",    "fieldtype": "Data",    "label": "Subject",    "reqd": 1, "in_list_view": 1},
+    {"fieldname": "teacher",    "fieldtype": "Link",    "label": "Teacher",    "options": "HR Employee", "in_list_view": 1},
+    {"fieldname": "room",       "fieldtype": "Link",    "label": "Room",       "options": "Class Room"}
+  ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2026-05-17 17:37:01.941372",
+ "modified_by": "Administrator",
+ "module": "Smart School",
+ "name": "Timetable Slot",
+ "owner": "Administrator",
+ "permissions": [],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
