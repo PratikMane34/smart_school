@@ -5,5 +5,5 @@
 from frappe.model.document import Document
 
 
-class VIsitorPurpose(Document):
+class VisitorPurpose(Document):
 	pass

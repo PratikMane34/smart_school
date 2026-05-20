@@ -5,5 +5,5 @@
 from frappe.tests.utils import FrappeTestCase
 
 
-class TestVisitorPurpose(FrappeTestCase):
-	pass
+class TestAnnouncement(FrappeTestCase):
+    pass

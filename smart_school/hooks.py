@@ -82,8 +82,8 @@ app_license = "mit"
 # Installation
 # ------------
 
-# before_install = "smart_school.install.before_install"
-# after_install = "smart_school.install.after_install"
+after_install = "smart_school.setup.after_install"
+after_migrate = "smart_school.setup.after_migrate"
 
 # Uninstallation
 # ------------
@@ -148,23 +148,28 @@ app_license = "mit"
 # Scheduled Tasks
 # ---------------
 
-# scheduler_events = {
-# 	"all": [
-# 		"smart_school.tasks.all"
-# 	],
-# 	"daily": [
-# 		"smart_school.tasks.daily"
-# 	],
-# 	"hourly": [
-# 		"smart_school.tasks.hourly"
-# 	],
-# 	"weekly": [
-# 		"smart_school.tasks.weekly"
-# 	],
-# 	"monthly": [
-# 		"smart_school.tasks.monthly"
-# 	],
-# }
+scheduler_events = {
+	"daily": [
+		"smart_school.api.enquiry_call_log.send_followup_reminders",
+	],
+}
+
+# Fixtures
+# --------
+# Anything the app needs to ship alongside its own DocTypes
+# (custom fields on stock doctypes, role records, lookup data, etc.)
+
+fixtures = [
+	{"dt": "Custom Field", "filters": [["module", "=", "Smart School"]]},
+	{"dt": "Property Setter", "filters": [["module", "=", "Smart School"]]},
+	"Sidebar Menu",
+	"Visitor Purpose",
+	"Timetable Period",
+	{
+		"dt": "Role",
+		"filters": [["name", "in", ["Parent", "Teacher", "School Admin"]]],
+	},
+]
 
 # Testing
 # -------

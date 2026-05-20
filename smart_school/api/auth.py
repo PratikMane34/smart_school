@@ -1,10 +1,7 @@
-# your_app/api/auth.py
+# smart_school/api/auth.py
 
 import frappe
 from frappe import _
-import json
-import secrets
-import hashlib
 from smart_school.utils.rate_limiter import rate_limit
 
 
@@ -17,10 +14,10 @@ from smart_school.utils.rate_limiter import rate_limit
 def login(usr=None, pwd=None):
     """
     Login endpoint that returns a Bearer token.
-    
-    POST /api/method/your_app.api.auth.login
+
+    POST /api/method/smart_school.api.auth.login
     Body: { "usr": "user@example.com", "pwd": "password" }
-    
+
     Response:
     {
         "success": true,
@@ -28,7 +25,11 @@ def login(usr=None, pwd=None):
         "data": {
             "token": "Bearer <api_key>:<api_secret>",
             "user": "user@example.com",
-            "full_name": "John Doe"
+            "full_name": "John Doe",
+            "user_type": "System User",
+            "roles": ["Parent"],
+            "parent_of": [ ... ],   # only when user has Parent role
+            "teacher": { ... }       # only when user has Teacher role
         }
     }
     """
@@ -39,13 +40,11 @@ def login(usr=None, pwd=None):
                 frappe.AuthenticationError
             )
 
-        # Authenticate user using Frappe's built-in method
         frappe.local.login_manager.authenticate(usr, pwd)
         frappe.local.login_manager.post_login()
 
         user = frappe.local.session_obj.user
 
-        # Generate API keys if they don't exist
         api_key = frappe.db.get_value("User", user, "api_key")
         api_secret = _get_or_generate_api_secret(user, api_key)
 
@@ -56,22 +55,27 @@ def login(usr=None, pwd=None):
 
         token = f"{api_key}:{api_secret}"
 
-        # Get user details
         user_doc = frappe.get_doc("User", user)
+        roles = [r.role for r in user_doc.roles]
+
+        data = {
+            "token": f"Bearer {token}",
+            "user": user,
+            "full_name": user_doc.full_name,
+            "user_type": user_doc.user_type,
+            "roles": roles,
+        }
+
+        if "Parent" in roles:
+            data["parent_of"] = _get_children_for_guardian(user)
+        if "Teacher" in roles:
+            data["teacher"] = _get_teacher_context(user)
 
         frappe.local.response["http_status_code"] = 200
         return {
             "success": True,
             "message": _("Login successful"),
-            "data": {
-                "token": f"Bearer {token}",
-                "api_key": api_key,
-                "api_secret": api_secret,
-                "user": user,
-                "full_name": user_doc.full_name,
-                "user_type": user_doc.user_type,
-                "roles": [r.role for r in user_doc.roles]
-            }
+            "data": data
         }
 
     except frappe.AuthenticationError:
@@ -98,11 +102,15 @@ def login(usr=None, pwd=None):
 @rate_limit(max_requests=20, window=60)
 def logout():
     """
-    Logout endpoint - invalidates the API secret/token.
-    
-    POST /api/method/your_app.api.auth.logout
+    Logout endpoint - clears the current server session.
+
+    The API token is intentionally NOT rotated here; rotating it would
+    invalidate every other device that the same user is signed in on.
+    Mobile clients should simply discard their stored token on logout.
+
+    POST /api/method/smart_school.api.auth.logout
     Headers: { "Authorization": "Bearer <api_key>:<api_secret>" }
-    
+
     Response:
     {
         "success": true,
@@ -119,10 +127,6 @@ def logout():
                 "message": _("Not authenticated.")
             }
 
-        # Regenerate API secret to invalidate the old token
-        _generate_api_secret(user)
-
-        # Clear session
         frappe.local.login_manager.logout()
 
         frappe.local.response["http_status_code"] = 200
@@ -150,7 +154,7 @@ def forgot_password(email=None):
     """
     Forgot password endpoint - sends password reset email.
     
-    POST /api/method/your_app.api.auth.forgot_password
+    POST /api/method/smart_school.api.auth.forgot_password
     Body: { "email": "user@example.com" }
     
     Response:
@@ -230,7 +234,7 @@ def reset_password(key=None, new_password=None):
     """
     Reset password using the reset key from email.
     
-    POST /api/method/your_app.api.auth.reset_password
+    POST /api/method/smart_school.api.auth.reset_password
     Body: { "key": "<reset_key>", "new_password": "newpass123" }
     """
     try:
@@ -293,9 +297,11 @@ def reset_password(key=None, new_password=None):
 @rate_limit(max_requests=20, window=60)
 def validate_token():
     """
-    Validate if the current Bearer token is still valid.
-    
-    GET /api/method/your_app.api.auth.validate_token
+    Validate the current Bearer token and return the same context payload
+    as login. Clients call this on app start (with a stored token) to
+    rehydrate user context without re-prompting for password.
+
+    GET /api/method/smart_school.api.auth.validate_token
     Headers: { "Authorization": "Bearer <api_key>:<api_secret>" }
     """
     try:
@@ -309,20 +315,29 @@ def validate_token():
             }
 
         user_doc = frappe.get_doc("User", user)
+        roles = [r.role for r in user_doc.roles]
+
+        data = {
+            "user": user,
+            "full_name": user_doc.full_name,
+            "user_type": user_doc.user_type,
+            "roles": roles,
+        }
+
+        if "Parent" in roles:
+            data["parent_of"] = _get_children_for_guardian(user)
+        if "Teacher" in roles:
+            data["teacher"] = _get_teacher_context(user)
 
         frappe.local.response["http_status_code"] = 200
         return {
             "success": True,
             "message": _("Token is valid."),
-            "data": {
-                "user": user,
-                "full_name": user_doc.full_name,
-                "user_type": user_doc.user_type,
-                "roles": [r.role for r in user_doc.roles]
-            }
+            "data": data
         }
 
     except Exception as e:
+        frappe.log_error(f"Validate token error: {str(e)}", "Auth API")
         frappe.local.response["http_status_code"] = 500
         return {
             "success": False,
@@ -384,3 +399,122 @@ def update_password(user, new_password):
     """Update user password."""
     from frappe.utils.password import update_password as _update_password
     _update_password(user, new_password)
+
+
+# ─────────────────────────────────────────────
+# CONTEXT HELPERS (Parent / Teacher)
+# ─────────────────────────────────────────────
+
+def _get_children_for_guardian(user):
+    """
+    Return the list of students that the given user is a guardian of.
+
+    Resolution:
+        Guardian (where user = <user> OR email_address = <user>)
+        -> Student Guardian rows (where guardian = guardian.name)
+        -> Student (the row's parent)
+    """
+    if not user or user == "Guest":
+        return []
+
+    guardians = frappe.get_all(
+        "Guardian",
+        filters={"user": user},
+        fields=["name"]
+    )
+
+    if not guardians:
+        guardians = frappe.get_all(
+            "Guardian",
+            filters={"email_address": user},
+            fields=["name"]
+        )
+
+    if not guardians:
+        return []
+
+    guardian_names = [g.name for g in guardians]
+
+    student_guardian_rows = frappe.get_all(
+        "Student Guardian",
+        filters={"guardian": ["in", guardian_names]},
+        fields=["parent", "guardian", "relation"]
+    )
+
+    student_ids = list({row.parent for row in student_guardian_rows if row.parent})
+    if not student_ids:
+        return []
+
+    students = frappe.get_all(
+        "Student",
+        filters={"name": ["in", student_ids]},
+        fields=["name", "student_name", "image", "student_email_id"]
+    )
+
+    enrollments = frappe.get_all(
+        "Program Enrollment",
+        filters={"student": ["in", student_ids]},
+        fields=["student", "program", "academic_year", "student_batch_name", "student_category"],
+        order_by="academic_year desc"
+    )
+
+    enrollment_by_student = {}
+    for e in enrollments:
+        enrollment_by_student.setdefault(e.student, e)
+
+    children = []
+    for s in students:
+        enrollment = enrollment_by_student.get(s.name)
+        children.append({
+            "student": s.name,
+            "student_name": s.student_name,
+            "student_email_id": s.student_email_id,
+            "image": s.image,
+            "program": enrollment.program if enrollment else None,
+            "academic_year": enrollment.academic_year if enrollment else None,
+            "student_batch_name": enrollment.student_batch_name if enrollment else None,
+        })
+
+    return children
+
+
+def _get_teacher_context(user):
+    """
+    Return the HR Employee context for a teacher user, plus a count of
+    timetable slots scheduled for today.
+
+    Resolution:
+        HR Employee (where user_id = <user>)
+        + count Timetable Slot rows for that employee on today's weekday
+          across submitted Timetables.
+    """
+    if not user or user == "Guest":
+        return None
+
+    employee = frappe.db.get_value(
+        "Employee",
+        {"user_id": user},
+        ["name", "employee_name", "designation"],
+        as_dict=True
+    )
+
+    if not employee:
+        return None
+
+    today_day = frappe.utils.getdate(frappe.utils.nowdate()).strftime("%A")
+
+    today_class_count = frappe.db.sql("""
+        SELECT COUNT(*)
+        FROM `tabTimetable Slot` ts
+        JOIN `tabTimetable` tt ON tt.name = ts.parent
+        WHERE ts.teacher = %(employee)s
+          AND ts.day = %(day)s
+          AND tt.docstatus = 1
+    """, {"employee": employee.name, "day": today_day})[0][0]
+
+    return {
+        "employee": employee.name,
+        "employee_name": employee.employee_name,
+        "designation": employee.designation,
+        "today_class_count": int(today_class_count or 0),
+    }
